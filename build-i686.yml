@@ -1,0 +1,30 @@
+name: Build Porteus 32-bit
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build inside 32-bit Debian Bullseye
+        run: |
+          docker run --platform linux/386 --rm \\
+            -v "$PWD:/src" -w /src i386/debian:bullseye \\
+            bash -lc 'apt-get update && apt-get install -y --no-install-recommends g++ make libx11-dev binutils && mkdir -p build && g++ -std=c++17 -O2 -Wall -Wextra -Wpedantic src/main.cpp -o build/win7shell -lX11'
+
+      - name: Verify binary
+        run: |
+          file build/win7shell
+          readelf -h build/win7shell | grep -E 'Class:|Machine:'
+          readelf --version-info build/win7shell | grep GLIBC_ | sort -Vu | tail -5 || true
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: win7shell-linux-i686
+          path: build/win7shell
