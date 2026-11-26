@@ -1,0 +1,14 @@
+#!/bin/sh
+# win7-session v5.2 - Openbox + win7shell, picom opsional
+export WINEARCH=win32
+export WINEPREFIX="$HOME/.wine"
+export WINEDLLOVERRIDES="mscoree,mshtml="
+xset s off
+xset -dpms
+# Picom: kalau ada, jalanin. Kalau belum ada, skip, win7shell tetap jalan (Aero palsu)
+if command -v picom >/dev/null 2>&1; then
+  picom --config "$HOME/.config/picom.conf" -b &
+fi
+wineserver -p &
+openbox &
+exec /usr/local/bin/win7shell
