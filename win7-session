@@ -1,0 +1,15 @@
+#!/bin/sh
+# win7-session v0.3 - Taskbar Aero
+# Letakkan di /usr/local/bin/win7-session, chmod +x
+export WINEARCH=win32
+export WINEPREFIX="$HOME/.wine"
+export WINEDLLOVERRIDES="mscoree,mshtml="
+xset s off
+xset -dpms
+# Compositor ringan untuk efek Aero (blur + transparan dikit)
+# Kalau picom belum terinstall, baris ini gagal diam-diam, taskbar tetap jalan (tapi tanpa blur)
+picom --config "$HOME/.config/picom.conf" -b &
+# Atau kalau config di /etc: picom -b &
+wineserver -p &
+openbox &
+exec /usr/local/bin/win7shell
