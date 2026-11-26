@@ -1,0 +1,33 @@
+#!/bin/sh
+# win7-session v6.2 - cek Wine boot dulu sebelum win7shell jalan
+export WINEARCH=win32
+if [ -z "$WINEPREFIX" ]; then
+  export WINEPREFIX="$HOME/.wine"
+fi
+export WINEDLLOVERRIDES="mscoree,mshtml="
+xset s off
+xset -dpms
+if command -v picom >/dev/null 2>&1; then
+  picom --config "$HOME/.config/picom.conf" -b &
+fi
+echo "[win7-session] Cek Wine prefix: $WINEPREFIX"
+# Kalau prefix belum ada / belum siap, init dulu
+if [ ! -f "$WINEPREFIX/drive_c/windows/system32/kernel32.dll" ]; then
+  echo "[win7-session] Prefix belum siap, wineboot --init..."
+  wineboot --init >/tmp/wineboot.log 2>&1
+fi
+# Tunggu wineserver + prefix siap, max 60 detik
+i=0
+while [ $i -lt 60 ]; do
+  if [ -f "$WINEPREFIX/drive_c/windows/system32/kernel32.dll" ] && [ -f "$WINEPREFIX/system.reg" ]; then
+    echo "[win7-session] Wine siap ($i detik)"
+    break
+  fi
+  echo "[win7-session] Menunggu Wine boot... $i/60"
+  sleep 1
+  i=$((i+1))
+done
+# Pastikan wineserver jalan (tunggu sampai semua wineboot selesai)
+wineserver -w 2>/dev/null
+openbox &
+exec /usr/local/bin/win7shell
