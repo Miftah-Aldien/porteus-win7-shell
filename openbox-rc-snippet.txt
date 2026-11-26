@@ -1,6 +1,0 @@
-<!-- ~/.config/openbox/rc.xml - potongan penting -->
-<!-- 1. Jangan gambar dekorasi untuk desktop/taskbar win7shell -->
-<!-- 2. Jendela Wine: dekorasi normal, biar bisa dipindah/resize -->
-<!-- Tambahkan di <applications>: -->
-<!-- <application name="Porteus Desktop"><decor>no</decor><focus>no</focus><layer>below</layer></application> -->
-<!-- <application name="Taskbar"><decor>no</decor><layer>above</layer><desktop>all</desktop></application> -->
